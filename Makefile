@@ -17,6 +17,9 @@ TARSRCS=$(LIBSRC) Makefile README Search.cpp
 
 all: Search
 
+
+filereader: filereader.cpp
+	$(CC) $^ -o $@
  
 libMapReduceFramework.o: libMapReduceFramework.cpp libMapReduceFramework.h
 	$(CC) -c $^ -o $@
