@@ -3,18 +3,18 @@
 
 #include <string>
 #include <zconf.h>
-#include "File.h"
+#include "myFile.h"
 #define INIT_NUM_REF 1
 
 
 class Block {
 private:
     int num_references;
-    const File& file;
+    const myFile& file;
     int block_number;
     void *blk;
 public:
-    Block(File & file, int block_number):
+    Block(myFile& file, int block_number):
             file(file), block_number(block_number), num_references(INIT_NUM_REF)
     {
         size_t size = file.getBlockSize();

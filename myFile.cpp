@@ -2,14 +2,14 @@
 // Created by bgalb on 6/1/17.
 //
 
-#include "File.h"
+#include "myFile.h"
 
 /**
  *
  * @param block_num block number to fetch
  * @return a pair of a pointer to the block data or NULL if non-existent and flag to signify error
  */
-pair<void *, bool> File::fetchBlock(int block_num)
+pair<void *, bool> myFile::fetchBlock(int block_num)
 {
     if(block_num >= numOfBlocks())
     {
@@ -31,7 +31,7 @@ pair<void *, bool> File::fetchBlock(int block_num)
  *
  * @return overall size of the current file in bytes
  */
-size_t File::getSize()
+size_t myFile::getSize()
 {
     return _n_bytes;
 }
@@ -40,7 +40,7 @@ size_t File::getSize()
  *
  * @return get full path of the file
  */
-string File::getFullPath()
+string myFile::getFullPath()
 {
     return _fullPath;
 }
@@ -50,7 +50,7 @@ string File::getFullPath()
  * @param blocksize a block's size in the system
  * @return number of blocks
  */
-size_t File::numOfBlocks()
+size_t myFile::numOfBlocks()
 {
     return (_n_bytes / _blockSize);
 }
@@ -59,7 +59,7 @@ size_t File::numOfBlocks()
  *
  * @return file descriptor in system
  */
-int File::get_fd()
+int myFile::get_fd()
 {
     return _fd;
 }
@@ -69,7 +69,7 @@ int File::get_fd()
  *
  * @return block size
  */
-size_t File::getBlockSize()
+size_t myFile::getBlockSize()
 {
     return _blockSize;
 }
@@ -79,7 +79,7 @@ size_t File::getBlockSize()
 /**
  *  increases instance count
  */
-void File::inc_instance_count()
+void myFile::inc_instance_count()
 {
     num_instances++;
 }
@@ -89,7 +89,7 @@ void File::inc_instance_count()
 /**
  * Close itself
  */
-void File::closeFile()
+void myFile::closeFile()
 {
     //TODO: close fd, free memory allocated, etc.
 }
@@ -98,7 +98,7 @@ void File::closeFile()
  *
  * @return true if the file still lives, false if it dies.
  */
-bool File::dec_instance_count()
+bool myFile::dec_instance_count()
 {
     if(--num_instances <= 0)
     {

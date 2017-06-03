@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <cstring>
 #include "Algorithm.h"
-#include "File.h"
+#include "myFile.h"
 #include <algorithm>
 #include <math.h>
 #define ERR -1
@@ -18,7 +18,7 @@ using namespace std;
 
 static int num_files = 0;
 static size_t blksize;
-static map<string, File> file_map;     //Map for full-path.
+static map<string, myFile> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
 static vector<Block> cache;            //All cache blocks.
 static Algorithm algo;                 //Algorithm of choice
@@ -58,7 +58,7 @@ int CacheFS_open(const char *pathname){
 
     if(fd == ERR) return ERR;
 
-    File f(path_str, blksize, fd, algo);
+    myFile f(path_str, blksize, fd, algo);
 
     file_map[path_str] = f;
     open_files[local_fd] = path_str;
@@ -71,7 +71,7 @@ int CacheFS_close(int file_id){
 
     if(open_files.find(file_id) == open_files.end()) return ERR;
     file_map[open_files[file_id]].dec_instance_count();
-    //Note: close here? or keep the close in File?
+    //Note: close here? or keep the close in myFile?
 }
 
 
@@ -85,8 +85,8 @@ int CacheFS_close(int file_id){
  */
 vector<pair<int,int>> blocksToFetch(size_t size, size_t n_bytes, off_t offset)
 {
-    int begin = min(offset, size);
-    int end = min(offset + n_bytes, size);
+    size_t begin = min((size_t)offset, size);
+    size_t end = min(offset + n_bytes, size);
 
     int first_block = (int)floor(begin / blksize);
     int num_bytes_first = (int)(blksize - (offset % blksize));
@@ -131,7 +131,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     auto iter = open_files.find(file_id);
     if(iter == open_files.end()) return ERR;
 
-    File & f = file_map[(*iter).second];
+    myFile & f = file_map[(*iter).second];
     auto blocks_to_fetch = blocksToFetch(f.getSize(), count, offset);
 
 
@@ -168,7 +168,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     blocks_to_fetch.erase(blocks_to_fetch.begin());
 
 
-    for (auto block:blocks_to_fetch)
+    for (auto &block:blocks_to_fetch)
     {
         data = f.fetchBlock(block.first);
         if(data.second) return ERR;

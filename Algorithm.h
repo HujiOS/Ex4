@@ -5,7 +5,7 @@
 #ifndef EX3_ALGORITHM_H
 #define EX3_ALGORITHM_H
 
-#include "File.h"
+#include "myFile.h"
 
 class Algorithm
 {
@@ -13,7 +13,7 @@ private:
 
 
 public:
-    virtual void add_block(File* f, int num) = 0;
+    virtual void add_block(myFile* f, int num) = 0;
 };
 
 #endif //EX3_ALGORITHM_H

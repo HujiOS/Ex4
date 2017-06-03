@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 
 using namespace std;
-class File {
+class myFile {
 private:
     string _fullPath;
     map<int, Block&> _blocks;    //map of block number to
@@ -36,7 +36,7 @@ public:
      * @param fd file descriptor
      * @return
      */
-    File(string path, size_t blocksize, int fd, Algorithm a):
+    myFile(string path, size_t blocksize, int fd, Algorithm a):
             _fullPath(path), _blockSize(blocksize), _fd(fd), num_instances(1), algo(a){
         struct stat st;
         stat(path.c_str(), &st);
