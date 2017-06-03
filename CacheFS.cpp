@@ -24,9 +24,6 @@ static map<string, myFile> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
 static Algorithm *algo = nullptr;                 //Algorithm of choice
 
-
-
-
 int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
                  double f_old , double f_new  ){
     struct stat fi;
