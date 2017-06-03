@@ -20,7 +20,6 @@ private:
     size_t _blockSize;           //system block size
     int _fd;                     //system file desc
     int num_instances;           // num instances open from our filesystem
-    int& algo;
 
 
     /**
@@ -35,8 +34,8 @@ public:
      * @param fd file descriptor
      * @return
      */
-    myFile(string path, size_t blocksize, int fd, int a):
-            _fullPath(path), _blockSize(blocksize), _fd(fd), num_instances(1), algo(a){
+    myFile(string path, size_t blocksize, int fd):
+            _fullPath(path), _blockSize(blocksize), _fd(fd), num_instances(1){
         struct stat st;
         stat(path.c_str(), &st);
         this -> _n_bytes = (size_t)st.st_size;
