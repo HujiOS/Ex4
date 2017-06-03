@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <math.h>
 #define ERR -1
-
+#define SUCCESS 0
 using namespace std;
 
 
@@ -47,7 +47,7 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
 
 
 int CacheFS_destroy(){
-    return 1;
+
 }
 
 
@@ -68,7 +68,7 @@ int CacheFS_open(const char *pathname){
 
     if(fd == ERR) return ERR;
 
-    myFile f(path_str, blksize, fd, algo);
+    myFile f(path_str, blksize, fd);
 
     file_map[path_str] = f;
     open_files[local_fd] = path_str;
@@ -142,7 +142,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     if(iter == open_files.end()) return ERR;
 
     myFile & f = file_map[(*iter).second];
-    auto blocks_to_fetch = blocksToFetch(f.getSize(), count, offset);
+    auto blocks_to_fetch = blocksToFetch(f.getSize(), count, offset);//returns a vector of pairs of ints, see doc'
 
 
     /**
@@ -154,10 +154,13 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     if (blocks_to_fetch.size() == 1)
     {
         int block = (int)(min(offset, f.getSize())/blksize);
-        auto data = f.fetchBlock(block);
-        void *data_ptr = data.first;
+
+        auto data = algo.get_block(&f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+
+        void *data_ptr = data.getData();
         data_ptr += blocks_to_fetch[0].first;
-        memcpy(buf, data_ptr, blocks_to_fetch[0].second-blocks_to_fetch[0].first + 1);  //+1 necessary?
+        memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first + 1);  //+1 necessary?
 
         return blocks_to_fetch[0].second-blocks_to_fetch[0].first + 1;
     }
@@ -167,8 +170,10 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      * Otherwise
      */
 
-    auto data = f.fetchBlock(blocks_to_fetch[0].first);
-    void *data_ptr = data.first;
+    auto data = algo.get_block(&f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+    if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+
+    void *data_ptr = data.getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
     memcpy(buf, data_ptr, blocks_to_fetch[0].second);
 
@@ -180,10 +185,10 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     for (auto &block:blocks_to_fetch)
     {
-        data = f.fetchBlock(block.first);
-        if(data.second) return ERR;
+        data = algo.get_block(&f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-        data_ptr = data.first;
+        data_ptr = data.getData();
 
         memcpy(buf, data_ptr, block.second);
 
@@ -196,10 +201,37 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
 int CacheFS_print_cache (const char *log_path)
 {
+    int num_of_block;
+    string s;
 
+    vector<Block*> b;
+
+    int fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY);
+    if (fd == -1) return ERR;
+
+    for(Block* blk : b)
+    {
+
+    }
+    ssize_t ret = write(fd, s.c_str(), s.size());
+    if(ret == -1) return ERR;
+
+
+    return SUCCESS;
 }
 
 
 int CacheFS_print_stat (const char *log_path){
+    unsigned long hits = 9999;
+    unsigned long misses = 1234;
+    string s("Hits number: %d.\nMisses number: %d.\n", hits, misses);
+
+    int fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY);
+    if (fd == -1) return ERR;
+
+    ssize_t ret = write(fd, s.c_str(), s.size());
+    if(ret == -1) return ERR;
+
+    return SUCCESS;
 
 }
