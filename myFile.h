@@ -6,7 +6,6 @@
 #define EX3_FILE_H
 #include <cstdio>
 #include "Block.h"
-#include "Algorithm.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -21,7 +20,7 @@ private:
     size_t _blockSize;           //system block size
     int _fd;                     //system file desc
     int num_instances;           // num instances open from our filesystem
-    Algorithm& algo;
+    int& algo;
 
 
     /**
@@ -36,7 +35,7 @@ public:
      * @param fd file descriptor
      * @return
      */
-    myFile(string path, size_t blocksize, int fd, Algorithm a):
+    myFile(string path, size_t blocksize, int fd, int a):
             _fullPath(path), _blockSize(blocksize), _fd(fd), num_instances(1), algo(a){
         struct stat st;
         stat(path.c_str(), &st);

@@ -9,10 +9,13 @@
 
 class Algorithm
 {
-private:
-
+protected:
+    int _blkNum;
 
 public:
+    Algorithm(int blkNum):_blkNum(blkNum){
+
+    }
     virtual void add_block(myFile* f, int num) = 0;
 };
 

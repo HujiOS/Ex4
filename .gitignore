@@ -30,7 +30,3 @@
 *.exe
 *.out
 *.app
-.idea/
-*.vcs
-*.xml
-*.iml
