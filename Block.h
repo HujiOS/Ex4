@@ -14,7 +14,6 @@ private:
     std::string _fname;
     int _block_number;
     void *blk;
-    bool _deleted = false;
 public:
     Block(myFile& file, int block_number):
             file(file), _block_number(block_number), num_references(INIT_NUM_REF)

@@ -44,12 +44,6 @@ public:
 
     /**
      *
-     * @param block_num block number to fetch
-     * @return a pair of a pointer to the block data or NULL if non-existent and flag to signify error
-     */
-    pair<void *, bool> fetchBlock(int block_num);
-    /**
-     *
      * @return overall size of the current file
      */
     size_t getSize();
