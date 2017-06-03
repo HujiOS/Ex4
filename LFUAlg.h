@@ -9,7 +9,7 @@
 class LFUAlg : public Algorithm{
 public:
     LFUAlg(int blknum){
-        super(blknum);
+        this(blknum);
     }
     // TODO pay attention to case that we are deleting block from last round.
 
@@ -17,7 +17,7 @@ private:
     void removeBlock(){
         std::sort(_blocks.begin(), _blocks.end(), [](Block a, Block b){ return a.numReferences() < b.numReferences();});
         _blocks = _blocks.reserve();
-        Block blk = _blocks.pop_back();
+        Block blk = (Block)_blocks.pop_back();
         blk.deleteBlock();
     }
 };

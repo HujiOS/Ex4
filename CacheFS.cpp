@@ -158,7 +158,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     {
         int block = (int)(min(offset, f.getSize())/blksize);
 
-        auto data = algo.get_block(&f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        auto data = algo->get_block(&f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
         if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
         void *data_ptr = data.getData();
@@ -173,7 +173,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      * Otherwise
      */
 
-    auto data = algo.get_block(&f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+    auto data = algo->get_block(&f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
     if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
     void *data_ptr = data.getData();
@@ -188,7 +188,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     for (auto &block:blocks_to_fetch)
     {
-        data = algo.get_block(&f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        data = algo->get_block(&f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
         if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
         data_ptr = data.getData();

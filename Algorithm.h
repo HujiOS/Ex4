@@ -36,7 +36,7 @@ public:
     };
 
     Block get_block(myFile* file, int id){
-        if(!this->verifyBlock(file, id)) return nullptr;
+        if(!this->verifyBlock(file, id)) return Block(*file, -1);
         Block tmpBlock(*file,-1);
         bool hit = false;
 
@@ -55,7 +55,7 @@ public:
                 tmpBlock = Block(*file, id);
             }
             catch(bad_alloc& ba){
-                return Block(*file, id);
+                return Block(*file, -1);
             }
             file->addBlock(tmpBlock);
             _misses++;
