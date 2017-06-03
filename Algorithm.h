@@ -31,12 +31,14 @@ public:
     }
 
     virtual void removeBlock() = 0;
+    virtual void evalBlock(Block &blk){
+      blk.getData();
+    };
 
     Block get_block(myFile* file, int id){
         if(!this->verifyBlock(file, id)) return nullptr;
         Block tmpBlock(*file,-1);
         bool hit = false;
-
 
         for(vector<Block>::iterator it = _blocks.begin(); it != _blocks.end() ; it++){
             if(it->getFname() == file->getFullPath() && it->getId() == id){
@@ -49,7 +51,12 @@ public:
             }
         }
         if(!hit){
-            tmpBlock = Block(*file, id);
+            try{
+                tmpBlock = Block(*file, id);
+            }
+            catch(bad_alloc& ba){
+                return Block(*file, id);
+            }
             file->addBlock(tmpBlock);
             _misses++;
             if(_blocks.size() == _blkNum) this->removeBlock();

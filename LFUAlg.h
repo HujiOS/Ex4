@@ -3,22 +3,23 @@
 //
 #include "Algorithm.h";
 
-#ifndef EX3_LRUALG_H
-#define EX3_LRUALG_H
+#ifndef EX3_LFU_H
+#define EX3_LFU_H
 
-class LRUAlg :public Algorithm{
+class LFUAlg : public Algorithm{
 public:
-    LRUAlg(int blknum){
+    LFUAlg(int blknum){
         super(blknum);
     }
     // TODO pay attention to case that we are deleting block from last round.
 
 private:
     void removeBlock(){
+        std::sort(_blocks.begin(), _blocks.end(), [](Block a, Block b){ return a.numReferences() < b.numReferences();});
+        _blocks = _blocks.reserve();
         Block blk = _blocks.pop_back();
         blk.deleteBlock();
     }
-
 };
 
-#endif //EX3_LRUALG_H
+#endif //EX3_LFU_H

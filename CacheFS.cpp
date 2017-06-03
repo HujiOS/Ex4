@@ -9,6 +9,8 @@
 #include <cstring>
 #include "Algorithm.h"
 #include "LRUAlg.h"
+#include "FBRAlg.h"
+#include "LRUAlg.h"
 #include "myFile.h"
 #include <algorithm>
 #include <math.h>
@@ -35,6 +37,8 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
     switch(cache_algo){
         case LRU:
             algo = LRUAlg(blocks_num);
+        case FBR:
+            algo = FBRAlg(blocks_num, f_old, f_new);
     }
     return 1;
 

@@ -14,6 +14,7 @@ private:
     string _fname;
     int _block_number;
     void *blk;
+    bool _deleted = false;
 public:
     Block(myFile& file, int block_number):
             file(file), _block_number(block_number), num_references(INIT_NUM_REF)
@@ -22,6 +23,9 @@ public:
         _fname = file.getFullPath();
         size_t size = file.getBlockSize();
         blk = new void*(size);
+        if(blk < 0){
+            throw bad_alloc();
+        }
         pread(file.get_fd(), blk, size, block_number * size);
     }
 
