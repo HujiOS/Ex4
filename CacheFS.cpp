@@ -7,12 +7,9 @@
 #include <vector>
 #include <fcntl.h>
 #include <cstring>
-#include "Algorithm.h"
 #include "LRUAlg.h"
+#include "LFUAlg.h"
 #include "FBRAlg.h"
-#include "LRUAlg.h"
-#include "myFile.h"
-#include <algorithm>
 #include <math.h>
 #define ERR -1
 #define SUCCESS 0
@@ -23,8 +20,7 @@ static int num_files = 0;
 static size_t blksize;
 static map<string, myFile> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
-static vector<Block> cache;            //All cache blocks.
-static Algorithm algo = nullptr;                 //Algorithm of choice
+static Algorithm *algo = nullptr;                 //Algorithm of choice
 
 
 
@@ -36,9 +32,16 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
     blksize = (size_t)fi.st_blksize;
     switch(cache_algo){
         case LRU:
-            algo = LRUAlg(blocks_num);
+            *algo = LRUAlg(blocks_num);
+            break;
         case FBR:
-            algo = FBRAlg(blocks_num, f_old, f_new);
+            *algo = FBRAlg(blocks_num, f_old, f_new);
+            break;
+        case LFU:
+            *algo = LFUAlg(blocks_num);
+            break;
+        default:
+            return -1;
     }
     return 1;
 
