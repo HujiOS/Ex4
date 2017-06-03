@@ -11,12 +11,55 @@ class Algorithm
 {
 protected:
     int _blkNum;
-
+    vector<Block> _blocks;
+    int _hits;
+    int _misses;
+    bool verifyBlock(myFile *f, int id){
+        return f->numOfBlocks() > id;
+    }
 public:
     Algorithm(int blkNum):_blkNum(blkNum){
 
     }
-    virtual void add_block(myFile* f, int num) = 0;
+
+    int misses(){
+        return _misses;
+    }
+
+    int hits(){
+        return _hits;
+    }
+
+    virtual void removeBlock() = 0;
+
+    Block get_block(myFile* file, int id){
+        if(!this->verifyBlock(file, id)) return nullptr;
+        Block tmpBlock(*file,-1);
+        bool hit = false;
+
+
+        for(vector<Block>::iterator it = _blocks.begin(); it != _blocks.end() ; it++){
+            if(it->getFname() == file->getFullPath() && it->getId() == id){
+                // we got an hit.
+                _hits++;
+                tmpBlock = *it;
+                _blocks.erase(it);
+                hit = true;
+                break;
+            }
+        }
+        if(!hit){
+            tmpBlock = Block(*file, id);
+            file->addBlock(tmpBlock);
+            _misses++;
+            if(_blocks.size() == _blkNum) this->removeBlock();
+            // maintain the last recent used block in the beginning of the vector
+        }
+
+        auto it = _blocks.begin();
+        _blocks.insert(it, tmpBlock);
+        return tmpBlock;
+    }
 };
 
 #endif //EX3_ALGORITHM_H

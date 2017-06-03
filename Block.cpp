@@ -35,3 +35,12 @@ void Block::setNumReferences(int num)
     num_references = num;
 }
 
+
+string Block::getFname(){
+    return _fname;
+}
+
+int Block::getId(){
+    return _block_number;
+}
+

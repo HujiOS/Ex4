@@ -9,24 +9,17 @@
  * @param block_num block number to fetch
  * @return a pair of a pointer to the block data or NULL if non-existent and flag to signify error
  */
-pair<void *, bool> myFile::fetchBlock(int block_num)
-{
-    if(block_num >= numOfBlocks())
-    {
-        //ERROR, not possible
-        return std::make_pair<void *, bool>(nullptr, true);
-    }
 
-    auto blk =  _blocks.find(block_num);  //Type is map iterator
 
-    if(blk == _blocks.end())
-    {
-        algo.add_block(this, block_num);
-        blk = _blocks.find(block_num);
-    }
-
-    return std::make_pair<void *, bool>((*blk).second.getData(), false);
+void myFile::removeBlock(int blkId){
+    auto elem = _blocks.find(blkId);
+    _blocks.erase(elem);
 }
+
+void myFile::addBlock(Block &block) {
+    _blocks.insert(make_pair(block.getId(), block));
+}
+
 /**
  *
  * @return overall size of the current file in bytes

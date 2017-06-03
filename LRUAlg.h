@@ -6,11 +6,19 @@
 #ifndef EX3_LRUALG_H
 #define EX3_LRUALG_H
 
-class LRU : Algorithm{
+class LRUAlg : Algorithm{
 public:
-    void add_block(myFile* f, int num){
-
+    LRUAlg(int blknum){
+        super(blknum);
     }
+    // TODO pay attention to case that we are deleting block from last round.
+
+private:
+    void removeBlock(){
+        Block blk = _blocks.pop_back();
+        blk.deleteBlock();
+    }
+
 };
 
 #endif //EX3_LRUALG_H

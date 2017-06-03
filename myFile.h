@@ -15,7 +15,7 @@ using namespace std;
 class myFile {
 private:
     string _fullPath;
-    map<int, Block&> _blocks;    //map of block number to
+    map<int, Block> _blocks;    //map of block number to
     size_t _n_bytes;             //size of file in bytes
     size_t _blockSize;           //system block size
     int _fd;                     //system file desc
@@ -90,6 +90,16 @@ public:
      * @return true if the file still lives, false if it dies.
      */
     bool dec_instance_count();
+
+    /**
+     * function who get an id of block to delete and remove it from the array.
+     * @param id
+     */
+
+    void removeBlock(int id);
+
+
+    void addBlock(Block &block);
 
 
 };

@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <cstring>
 #include "Algorithm.h"
+#include "LRUAlg.h"
 #include "myFile.h"
 #include <algorithm>
 #include <math.h>
@@ -21,7 +22,7 @@ static size_t blksize;
 static map<string, myFile> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
 static vector<Block> cache;            //All cache blocks.
-static Algorithm algo;                 //Algorithm of choice
+static Algorithm algo = nullptr;                 //Algorithm of choice
 
 
 
@@ -31,13 +32,18 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
     struct stat fi;
     stat("/tmp", &fi);
     blksize = (size_t)fi.st_blksize;
+    switch(cache_algo){
+        case LRU:
+            algo = LRUAlg(blocks_num);
+    }
+    return 1;
 
 }
 
 
 
 int CacheFS_destroy(){
-
+    return 1;
 }
 
 

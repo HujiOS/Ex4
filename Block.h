@@ -10,14 +10,18 @@
 class Block {
 private:
     int num_references;
-    const myFile& file;
-    int block_number;
+    myFile& file const;
+    string _fname;
+    int _block_number;
     void *blk;
 public:
     Block(myFile& file, int block_number):
-            file(file), block_number(block_number), num_references(INIT_NUM_REF)
+            file(file), _block_number(block_number), num_references(INIT_NUM_REF)
     {
+        if(block_number == -1) return;
+        _fname = file.getFullPath();
         size_t size = file.getBlockSize();
+        blk = new void*(size);
         pread(file.get_fd(), blk, size, block_number * size);
     }
 
@@ -39,6 +43,21 @@ public:
      * @param num new number of
      */
     void setNumReferences(int num);
+
+    /**
+     * @return filename associated for this block
+     */
+    string getFname();
+
+    /**
+     * @return block internal Id
+     */
+    int getId();
+
+
+    void deleteBlock(){
+        file.removeBlock(_block_number);
+    }
 
 };
 
