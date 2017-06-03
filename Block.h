@@ -10,8 +10,8 @@
 class Block {
 private:
     int num_references;
-    myFile& file const;
-    string _fname;
+    myFile& const file ;
+    std::string _fname;
     int _block_number;
     void *blk;
     bool _deleted = false;
@@ -51,7 +51,7 @@ public:
     /**
      * @return filename associated for this block
      */
-    string getFname();
+    std::string getFname();
 
     /**
      * @return block internal Id

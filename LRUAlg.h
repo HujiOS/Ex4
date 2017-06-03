@@ -1,7 +1,7 @@
 //
 // Created by omer on 6/3/17.
 //
-#include "Algorithm.h";
+#include "Algorithm.h"
 
 #ifndef EX3_LRUALG_H
 #define EX3_LRUALG_H

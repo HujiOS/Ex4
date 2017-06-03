@@ -5,8 +5,9 @@
 #ifndef EX3_ALGORITHM_H
 #define EX3_ALGORITHM_H
 
+#include <string>
 #include "myFile.h"
-
+#include "Block.h"
 class Algorithm
 {
 protected:
