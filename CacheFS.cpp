@@ -6,11 +6,13 @@
 #include <fcntl.h>
 #include <cstring>
 
+class Block;
 #include "CacheFS.h"
 #include "myFile.h"
 #include "LRUAlg.h"
 #include "LFUAlg.h"
 #include "FBRAlg.h"
+#include "Block.h"
 #include <math.h>
 #define ERR -1
 #define SUCCESS 0

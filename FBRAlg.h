@@ -7,8 +7,7 @@
 #define EX3_FBRALG_H
 class FBRAlg : public Algorithm{
 public:
-    FBRAlg(int blknum, double f_old, double f_new):_old(f_old),_new(f_new){
-        super(blknum);
+    FBRAlg(int blknum, double f_old, double f_new):Algorithm(blknum),_old(f_old),_new(f_new){
     }
     // TODO pay attention to case that we are deleting block from last round.
 

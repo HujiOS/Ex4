@@ -5,13 +5,12 @@
 #ifndef EX3_FILE_H
 #define EX3_FILE_H
 #include <cstdio>
-#include "Block.h"
 #include <vector>
 #include <string>
 #include <map>
 #include <sys/stat.h>
-
 using namespace std;
+class Block;
 class myFile {
 private:
     string _fullPath;

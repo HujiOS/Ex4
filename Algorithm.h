@@ -6,8 +6,14 @@
 #define EX3_ALGORITHM_H
 
 #include <string>
+#include <math.h>
 #include "myFile.h"
 #include "Block.h"
+#include <algorithm>
+#include <functional>
+#include <array>
+#include <iostream>
+
 class Algorithm
 {
 protected:

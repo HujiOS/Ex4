@@ -2,11 +2,10 @@
 #define EX3_BLOCK_H
 
 #include <string>
-#include <zconf.h>
-#include "myFile.h"
+//#include <zconf.h>
+#include <unistd.h>
 #define INIT_NUM_REF 1
-
-
+#include "myFile.h"
 class Block {
 private:
     int num_references;
@@ -21,11 +20,11 @@ public:
         if(block_number == -1) return;
         _fname = file.getFullPath();
         size_t size = file.getBlockSize();
-        blk = new void*(size);
         if(blk < 0){
             throw bad_alloc();
         }
-        pread(file.get_fd(), blk, size, block_number * size);
+        off_t offsite = block_number * (off_t)size;
+        pread(file.get_fd(), blk, size, offsite);
     }
 
     /**
@@ -61,6 +60,7 @@ public:
     void deleteBlock(){
         file.removeBlock(_block_number);
     }
+    Block& operator=(const Block& b) = default;
 
 };
 

@@ -8,14 +8,14 @@
 
 class LRUAlg :public Algorithm{
 public:
-    LRUAlg(int blknum){
-        super(blknum);
+    LRUAlg(int blknum):Algorithm(blknum){
     }
     // TODO pay attention to case that we are deleting block from last round.
 
 private:
     void removeBlock(){
-        Block blk = _blocks.pop_back();
+        Block blk = *_blocks.end();
+        _blocks.pop_back();
         blk.deleteBlock();
     }
 
