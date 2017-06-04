@@ -18,7 +18,7 @@ class Algorithm
 {
 protected:
     int _blkNum;
-    vector<Block> _blocks;
+    vector<Block*> _blocks;
     int _hits;
     int _misses;
     bool verifyBlock(myFile *f, int id){
@@ -38,17 +38,17 @@ public:
     }
 
     virtual void removeBlock() = 0;
-    virtual void evalBlock(Block &blk){
-      blk.getData();
+    virtual void evalBlock(Block *blk){
+      blk->getData();
     };
 
-    Block get_block(myFile* file, int id){
-        if(!this->verifyBlock(file, id)) return Block(*file, -1);
-        Block tmpBlock(*file,-1);
+    Block *get_block(myFile* file, int id){
+        if(!this->verifyBlock(file, id)) return nullptr;
+        Block *tmpBlock = nullptr;
         bool hit = false;
 
-        for(vector<Block>::iterator it = _blocks.begin(); it != _blocks.end() ; it++){
-            if(it->getFname() == file->getFullPath() && it->getId() == id){
+        for(vector<Block*>::iterator it = _blocks.begin(); it != _blocks.end() ; it++){
+            if((*it)->getFname() == file->getFullPath() && (*it)->getId() == id){
                 // we got an hit.
                 _hits++;
                 tmpBlock = *it;
@@ -59,10 +59,10 @@ public:
         }
         if(!hit){
             try{
-                tmpBlock = Block(*file, id);
+                tmpBlock = new Block(*file, id);
             }
             catch(bad_alloc& ba){
-                return Block(*file, -1);
+                return nullptr;
             }
             file->addBlock(tmpBlock);
             _misses++;
@@ -72,7 +72,7 @@ public:
 
         auto it = _blocks.begin();
         _blocks.insert(it, tmpBlock);
-        return tmpBlock;
+        return *_blocks.begin();
     }
 };
 

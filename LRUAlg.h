@@ -14,9 +14,10 @@ public:
 
 private:
     void removeBlock(){
-        Block blk = *_blocks.end();
+        Block *blk = *_blocks.end();
         _blocks.pop_back();
-        blk.deleteBlock();
+        blk->deleteBlock();
+        delete blk;
     }
 
 };

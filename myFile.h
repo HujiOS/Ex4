@@ -14,7 +14,7 @@ class Block;
 class myFile {
 private:
     string _fullPath;
-    map<int, Block> _blocks;    //map of block number to
+    map<int, Block*> _blocks;    //map of block number to
     size_t _n_bytes;             //size of file in bytes
     size_t _blockSize;           //system block size
     int _fd;                     //system file desc
@@ -91,7 +91,7 @@ public:
     void removeBlock(int id);
 
 
-    void addBlock(Block &block);
+    void addBlock(Block *block);
 
 
 };

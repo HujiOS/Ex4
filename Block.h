@@ -9,13 +9,13 @@
 class Block {
 private:
     int num_references;
-    myFile& const file ;
+    myFile _file ;
     std::string _fname;
     int _block_number;
     void *blk;
 public:
     Block(myFile& file, int block_number):
-            file(file), _block_number(block_number), num_references(INIT_NUM_REF)
+            _file(file), _block_number(block_number), num_references(INIT_NUM_REF)
     {
         if(block_number == -1) return;
         _fname = file.getFullPath();
@@ -58,9 +58,11 @@ public:
 
 
     void deleteBlock(){
-        file.removeBlock(_block_number);
+        _file.removeBlock(_block_number);
     }
-    Block& operator=(const Block& b) = default;
+    bool operator==(const Block& b){
+        return this->_fname == b._fname && this->_block_number == b._block_number;
+    };
 
 };
 

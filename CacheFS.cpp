@@ -5,6 +5,7 @@
 #include <vector>
 #include <fcntl.h>
 #include <cstring>
+#include <algorithm>
 
 class Block;
 #include "CacheFS.h"
@@ -13,7 +14,6 @@ class Block;
 #include "LFUAlg.h"
 #include "FBRAlg.h"
 #include "Block.h"
-#include <math.h>
 #define ERR -1
 #define SUCCESS 0
 #define MANDATORY_LOC "/tmp"
@@ -22,7 +22,7 @@ using namespace std;
 
 static int num_files = 0;
 static size_t blksize;
-static map<string, myFile> file_map;     //Map for full-path.
+static map<string, myFile*> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
 static Algorithm *algo = nullptr;                 //Algorithm of choice
 
@@ -64,7 +64,7 @@ int CacheFS_open(const char *pathname){
     if(iter != file_map.end())
     {
         open_files[local_fd] = path_str;
-        (*iter).second.inc_instance_count();
+        (*iter).second->inc_instance_count();
         return local_fd;
     }
 
@@ -74,7 +74,7 @@ int CacheFS_open(const char *pathname){
 
     if(fd == ERR) return ERR;
 
-    myFile f(path_str, blksize, fd);
+    myFile *f = new myFile(path_str, blksize, fd);
 
     file_map[path_str] = f;
     open_files[local_fd] = path_str;
@@ -86,7 +86,7 @@ int CacheFS_open(const char *pathname){
 int CacheFS_close(int file_id){
 
     if(open_files.find(file_id) == open_files.end()) return ERR;
-    file_map[open_files[file_id]].dec_instance_count();
+    file_map[open_files[file_id]]->dec_instance_count();
     //Note: close here? or keep the close in myFile?
 }
 
@@ -102,7 +102,7 @@ int CacheFS_close(int file_id){
 vector<pair<int,int>> blocksToFetch(size_t size, size_t n_bytes, off_t offset)
 {
     size_t begin = min((size_t)offset, size);
-    size_t end = min(offset + n_bytes, size);
+    size_t end = min((size_t)offset + n_bytes, size);
 
     int first_block = (int)floor(begin / blksize);
     int num_bytes_first = (int)(blksize - (offset % blksize));
@@ -147,8 +147,9 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     auto iter = open_files.find(file_id);
     if(iter == open_files.end()) return ERR;
 
-    myFile & f = file_map[(*iter).second];
-    auto blocks_to_fetch = blocksToFetch(f.getSize(), count, offset);//returns a vector of pairs of ints, see doc'
+    myFile *f = file_map[(*iter).second];
+    auto blocks_to_fetch = blocksToFetch(f->getSize(), count, offset);//returns a vector of pairs
+    // of ints, see doc'
 
 
     /**
@@ -159,12 +160,12 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      */
     if (blocks_to_fetch.size() == 1)
     {
-        int block = (int)(min(offset, f.getSize())/blksize);
+        int block = (int)(min(offset, (off_t)f->getSize())/blksize);
 
-        auto data = algo->get_block(&f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-        if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+        auto data = algo->get_block(f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-        void *data_ptr = data.getData();
+        void *data_ptr = data->getData();
         data_ptr += blocks_to_fetch[0].first;
         memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first + 1);  //+1 necessary?
 
@@ -176,10 +177,10 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      * Otherwise
      */
 
-    auto data = algo->get_block(&f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-    if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+    auto data = algo->get_block(f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+    if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-    void *data_ptr = data.getData();
+    void *data_ptr = data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
     memcpy(buf, data_ptr, blocks_to_fetch[0].second);
 
@@ -191,10 +192,10 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     for (auto &block:blocks_to_fetch)
     {
-        data = algo->get_block(&f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-        if(data.getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+        data = algo->get_block(f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
+        if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-        data_ptr = data.getData();
+        data_ptr = data->getData();
 
         memcpy(buf, data_ptr, block.second);
 

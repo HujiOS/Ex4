@@ -2,7 +2,7 @@
 // Created by omer on 6/3/17.
 //
 #include "Algorithm.h"
-
+#include <math.h>
 #ifndef EX3_FBRALG_H
 #define EX3_FBRALG_H
 class FBRAlg : public Algorithm{
@@ -16,19 +16,26 @@ private:
     double _new;
     void removeBlock(){
         size_t oldIdx = floor(_blkNum * _old);
-        minRef = min(map(_blocks.begin() + oldIdx, _blocks.end(), [](Block a){return a.numReferences();}));
-        for(vector<Block>::iterator it = _blocks.end() ; it != _blocks.begin() + oldIdx ; --it){
-            if(it->numReferences() == minRef){
-                _blocks.erase(it);
-                break;
-            }
+        vector<int> refs;
+        for(auto it = _blocks.begin() + oldIdx; it != _blocks.end(); ++it){
+            refs.push_back((*it)->numReferences());
         }
+        auto minRef = min_element(begin(refs), end(refs));
+        size_t dist = distance(begin(refs), minRef) + oldIdx;
+        auto blockIt = _blocks.begin() + dist;
+        _blocks.erase(blockIt);
+        delete *blockIt;
     }
 
-    void evalBlock(Block &blk){
-        ptrdiff_t idx = std::find(_blocks.begin(), _blocks.end(), blk) - _blocks.begin();
+    void evalBlock(Block *blk){
+        ptrdiff_t idx = find_if(_blocks.begin(), _blocks.end(),
+                                [&blk](const Block* b)
+                                {
+                                    return *blk == *b;
+                                }
+        ) - _blocks.begin();
         if(_new < idx / _blkNum){
-            blk.getData();
+            blk->getData();
         }
     };
 };

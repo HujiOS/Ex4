@@ -16,8 +16,8 @@ void myFile::removeBlock(int blkId){
     _blocks.erase(elem);
 }
 
-void myFile::addBlock(Block &block) {
-    _blocks.insert(make_pair(block.getId(), block));
+void myFile::addBlock(Block *block) {
+    _blocks.insert(make_pair(block->getId(), block));
 }
 
 /**
