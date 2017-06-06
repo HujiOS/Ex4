@@ -3,7 +3,7 @@ RANLIB=ranlib
 
 LIBOBJ=CacheFS.o
 
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -c -g
 LOADLIBES = -L./
 LFLAGS = -o
 
@@ -11,16 +11,17 @@ MORECLEAN=CacheFS.a
 
 TAR=tar
 TARFLAGS=-cvf
-TARNAME=ex2.tar
+TARNAME=ex4.tar
 TARSRCS=$(LIBSRC) Makefile README Algorithm.h Block.cpp Block.h CacheFS.cpp FBRAlg.h LFUAlg.h LRUAlg.h myFile.cpp myFile.h
 
 all: CacheFS.a
 
-#TEST.o : TEST.cpp
-#	$(CC) $(CFLAGS) $^ -o $@
+TEST.o : TEST.cpp
+	$(CC) $(CFLAGS) $^ -o $@
 
-TEST : TEST.cpp
-	$(CC) $(CFLAGS) $^ CacheFS.a -o $@
+TEST : TEST.o
+	$(CC) -std=c++11 -Wall *.o -o TEST
+
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
@@ -31,7 +32,6 @@ filereader: filereader.cpp
 CacheFS.a: $(LIBOBJ)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
-
 
 clean:
 	$(RM) $(TARGETS) $(OBJ) $(LIBOBJ) $(MORECLEAN) *~ *core

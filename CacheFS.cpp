@@ -1,18 +1,23 @@
 #include <cstdio>
+#include <linux/limits.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <sys/stat.h>
 #include <string>
 #include <map>
 #include <vector>
 #include <fcntl.h>
-#include <cstring>
-#include <algorithm>
 
-class Block;
+#include <cstring>
+
+#include <algorithm>
 #include "CacheFS.h"
 #include "myFile.h"
 #include "LRUAlg.h"
 #include "LFUAlg.h"
 #include "FBRAlg.h"
+class Block;
+
 #include "Block.h"
 #define ERR -1
 #define SUCCESS 0
@@ -58,9 +63,13 @@ int CacheFS_destroy(){
 
 int CacheFS_open(const char *pathname){
     int local_fd = num_files++;
+    char *path_tmp = realpath(pathname, NULL);
 
-    auto iter = file_map.find(string(pathname));
+    if(path_tmp == nullptr) return ERR;
+
     string path_str(pathname);
+    auto iter = file_map.find(path_str);
+
 
     if(iter != file_map.end())
     {
@@ -71,9 +80,10 @@ int CacheFS_open(const char *pathname){
 
     if(path_str.find(MANDATORY_LOC) != 0) return ERR;
 
-    int fd = open(pathname, O_RDONLY|O_DIRECT|O_SYNC);
+    int fd = open(path_str.c_str(), O_RDONLY|O_DIRECT|O_SYNC);
 
     if(fd == ERR) return ERR;
+
 
     myFile *f = new myFile(path_str, blksize, fd);
 
