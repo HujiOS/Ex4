@@ -251,10 +251,10 @@ int CacheFS_print_stat (const char *log_path){
     int misses = algo->hits();
 
     string s=string("Hits number: ") + to_string(hits) +
-            string(".\nMisses number: ") + to_string(misses)+ string(".\n");
+            string(".\nMisses number: ") + to_string(misses) + string(".\n");
 
-    int fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY);
-    if (fd == -1) return ERR;
+    int fd;
+    if((fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY)) < 0) return ERR;
 
     ssize_t ret = write(fd, s.c_str(), s.size());
     if(ret == -1) return ERR;
