@@ -45,7 +45,7 @@ string myFile::getFullPath()
  */
 size_t myFile::numOfBlocks()
 {
-    return (_n_bytes / _blockSize);
+    return (_n_bytes / _blockSize) + 1;
 }
 
 /**

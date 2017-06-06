@@ -123,9 +123,9 @@ vector<pair<int,int>> blocksToFetch(size_t size, size_t n_bytes, off_t offset)
     size_t end = min((size_t)offset + n_bytes, size);
 
     int first_block = (int)floor(begin / blksize);
-    int num_bytes_first = (int)(blksize - (offset % blksize));
-    int last_block = (int)floor((offset + n_bytes)/(blksize));
-    int num_bytes_last = (int)(end%blksize);
+    int num_bytes_first = (int)(blksize - (begin % blksize));
+    int last_block = (int)floor(end / (blksize));
+    int num_bytes_last = (int)(end % blksize);
 
     vector<pair<int,int>> res;
 
@@ -181,7 +181,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
         int block = (int)(min(offset, (off_t)f->getSize())/blksize);
 
         auto data = algo->get_block(f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-        if(data == nullptr) return ERR;   //error is a block with id -1(macro ERR)
+        if(data == nullptr) return ERR;
 
         char *data_ptr = (char*)data->getData();
         data_ptr += blocks_to_fetch[0].first;
@@ -196,7 +196,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      */
 
     auto data = algo->get_block(f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-    if(data == nullptr) return ERR;   //error is a block with id -1(macro ERR)
+    if(data == nullptr) return ERR;
 
     char *data_ptr = (char*)data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
