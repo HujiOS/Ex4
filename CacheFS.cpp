@@ -68,6 +68,8 @@ int CacheFS_open(const char *pathname){
     if(path_tmp == nullptr) return ERR;
 
     string path_str(pathname);
+    free(path_tmp);
+
     auto iter = file_map.find(path_str);
 
 
@@ -230,14 +232,14 @@ int CacheFS_print_cache (const char *log_path)
 
     int fd;
     if((fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY)) < 0) return ERR;
+    auto to_print = algo->printable();
 
-    for(Block* blk : b)
+    for(auto print_item : to_print)
     {
-
+        s = print_item.first + string(" ") + to_string(print_item.second) + string("\n");
+        ssize_t ret = write(fd, s.c_str(), s.size());
+        if(ret == -1) return ERR;
     }
-    ssize_t ret = write(fd, s.c_str(), s.size());
-    if(ret == -1) return ERR;
-
 
     return SUCCESS;
 }
@@ -245,9 +247,11 @@ int CacheFS_print_cache (const char *log_path)
 
 int CacheFS_print_stat (const char *log_path){
     return SUCCESS;
-    unsigned long hits = 9999;
-    unsigned long misses = 1234;
-    string s("Hits number: %d.\nMisses number: %d.\n", hits, misses);
+    int hits = algo->hits();
+    int misses = algo->hits();
+
+    string s=string("Hits number: ") + to_string(hits) +
+            string(".\nMisses number: ") + to_string(misses)+ string(".\n");
 
     int fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY);
     if (fd == -1) return ERR;
