@@ -82,5 +82,4 @@ public:
 
 };
 
-
 #endif //EX3_BLOCK_H
