@@ -460,7 +460,6 @@ void basicFBR()
     CacheFS_close(fd2);
     CacheFS_destroy();
 
-
     // test that the lowest frequency from "old" is removed, and not the oldest one in "old":
     CacheFS_init(10, FBR, 0.3, 0.3);
     fd1 = CacheFS_open("/tmp/FBR1.txt");

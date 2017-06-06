@@ -12,8 +12,11 @@
  */
 void* Block::getData()
 {
-    num_references++;
     return _blk;
+}
+
+void Block::ref(){
+    num_references++;
 }
 
 /**

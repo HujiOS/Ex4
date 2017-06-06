@@ -63,6 +63,8 @@ public:
      */
     void setNumReferences(int num);
 
+    void ref();
+
     /**
      * @return filename associated for this block
      */

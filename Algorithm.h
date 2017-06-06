@@ -40,7 +40,7 @@ public:
 
     virtual void removeBlock() = 0;
     virtual void evalBlock(Block *blk){
-      blk->getData();
+      blk->ref();
     };
 
     Block *get_block(myFile* file, int id){
@@ -53,6 +53,7 @@ public:
                 // we got an hit.
                 _hits++;
                 tmpBlock = *it;
+                evalBlock(tmpBlock);
                 _blocks.erase(it);
                 hit = true;
                 break;

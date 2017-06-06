@@ -3,30 +3,35 @@
 //
 #include "Algorithm.h"
 #include <math.h>
+#include <assert.h>
+
 #ifndef EX3_FBRALG_H
 #define EX3_FBRALG_H
 class FBRAlg : public Algorithm{
 public:
-    FBRAlg(int blknum, double f_old, double f_new):Algorithm(blknum),_old(f_old),_new(f_new){
-    }
+    FBRAlg(int blknum, double f_old, double f_new):Algorithm(blknum),_old(f_old),_new(f_new){}
     // TODO pay attention to case that we are deleting block from last round.
 
 private:
     double _old;
     double _new;
     void removeBlock(){
-        size_t oldIdx = floor(_blkNum * _old);
+        size_t startOfOld = (size_t)ceil(_blkNum * (1- _old));
         vector<int> refs;
-        for(auto it = _blocks.begin() + oldIdx; it != _blocks.end(); ++it){
+        for(auto it = _blocks.begin() + startOfOld; it != _blocks.end(); ++it){
             refs.push_back((*it)->numReferences());
         }
-        auto minRef = min_element(begin(refs), end(refs));
-        reverse(begin(refs),end(refs));
-        size_t dist = distance(begin(refs), minRef) + oldIdx;
-        auto blockIt = _blocks.begin() + dist;
-        Block*tmpBlock = *blockIt;
-        _blocks.erase(blockIt);
-        delete tmpBlock;
+
+        int minRef = *min_element(begin(refs), end(refs));
+
+        for(auto itt = _blocks.end() - 1; itt != _blocks.begin() + startOfOld; --itt){
+            if( (*itt)->numReferences() == minRef ){
+                Block*tmpBlock = *itt;
+                _blocks.erase(itt);
+                delete tmpBlock;
+                break;
+            }
+        }
     }
 
     void evalBlock(Block *blk){
@@ -36,8 +41,8 @@ private:
                                     return *blk == *b;
                                 }
         ) - _blocks.begin();
-        if(_new < idx / _blkNum){
-            blk->getData();
+        if(_new <= (double)idx / (double)_blkNum){
+            blk->ref();
         }
     };
 
