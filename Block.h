@@ -2,8 +2,12 @@
 #define EX3_BLOCK_H
 
 #include <string>
-//#include <zconf.h>
+#include <zconf.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <cstdlib>
+
+
 #define INIT_NUM_REF 1
 #include "myFile.h"
 class Block {
@@ -12,7 +16,7 @@ private:
     myFile _file ;
     std::string _fname;
     int _block_number;
-    void *blk;
+    void *_blk;
 public:
     Block(myFile& file, int block_number):
             _file(file), _block_number(block_number), num_references(INIT_NUM_REF)
@@ -20,11 +24,12 @@ public:
         if(block_number == -1) return;
         _fname = file.getFullPath();
         size_t size = file.getBlockSize();
-        if(blk < 0){
+        _blk = aligned_alloc(size, size);
+        if(_blk < 0){
             throw bad_alloc();
         }
         off_t offsite = block_number * (off_t)size;
-        pread(file.get_fd(), blk, size, offsite);
+        pread(file.get_fd(), _blk, size, offsite);
     }
 
     /**

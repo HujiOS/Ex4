@@ -13,7 +13,7 @@
 void* Block::getData()
 {
     num_references++;
-    return blk;
+    return _blk;
 }
 
 /**

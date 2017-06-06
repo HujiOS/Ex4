@@ -93,7 +93,6 @@ public:
 
     void addBlock(Block *block);
 
-
 };
 
 
