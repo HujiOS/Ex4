@@ -185,9 +185,9 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
         char *data_ptr = (char*)data->getData();
         data_ptr += blocks_to_fetch[0].first;
-        memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first + 1);  //+1 necessary?
+        memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first);  //TODO: +1 necessary?
 
-        return blocks_to_fetch[0].second-blocks_to_fetch[0].first + 1;
+        return blocks_to_fetch[0].second-blocks_to_fetch[0].first;  //TODO: +1 necessary?
     }
 
 
