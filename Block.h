@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <malloc.h>
+#include <iostream>
 
 
 #define INIT_NUM_REF 1
@@ -15,29 +16,31 @@
 class Block {
 private:
     int num_references;
-    myFile _file ;
+    myFile *_file ;
     std::string _fname;
     int _block_number;
     void *_blk;
 public:
-    Block(myFile& file, int block_number):
+    Block(myFile*file, int block_number):
             _file(file), _block_number(block_number), num_references(INIT_NUM_REF)
     {
         if(block_number == -1) return;
-        _fname = file.getFullPath();
-        size_t size = file.getBlockSize();
+        _fname = file->getFullPath();
+        size_t size = file->getBlockSize();
         if((_blk = aligned_alloc(size, size)) < 0){
+            std::cout << "Error while alloc" << std::endl;
             throw bad_alloc();
         }
         off_t offsite = block_number * (off_t)size;
-        if(pread(file.get_fd(), _blk, size, offsite) < 0){
-            free(_blk);
+        if(pread(file->get_fd(), _blk, size, offsite) < 0){
+            std::cout << "Error while pread" << std::endl;
             _blk = nullptr;
             throw bad_alloc();
         }
     }
     ~Block(){
         this->deleteBlock();
+        free(_blk);
         return;
     }
 
@@ -72,8 +75,7 @@ public:
 
 
     void deleteBlock(){
-        _file.removeBlock(_block_number);
-        free(_blk); // TODO check if we opened successfuly otherwise _blk = nullptr
+        _file->removeBlock(_block_number);
     }
 
     bool operator==(const Block& b){

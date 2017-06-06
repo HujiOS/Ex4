@@ -96,9 +96,9 @@ bool myFile::dec_instance_count()
     if(--num_instances <= 0)
     {
         closeFile();
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 
 }
