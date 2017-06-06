@@ -67,10 +67,15 @@ public:
             if(_blocks.size() == _blkNum) this->removeBlock();
             // maintain the last recent used block in the beginning of the vector
         }
-
         auto it = _blocks.begin();
         _blocks.insert(it, tmpBlock);
         return *_blocks.begin();
+    }
+
+    void destroy(){
+        for(auto blk : _blocks){
+            delete blk;
+        }
     }
 };
 

@@ -18,7 +18,6 @@ private:
                                                                                > b->numReferences();});
         Block *blk = _blocks.back();
         _blocks.pop_back();
-        blk->deleteBlock();
         delete blk;
     }
 };

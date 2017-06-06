@@ -51,7 +51,8 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
 
 
 int CacheFS_destroy(){
-
+    algo->destroy();
+    return SUCCESS;
 }
 
 
