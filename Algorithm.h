@@ -77,6 +77,8 @@ public:
             delete blk;
         }
     }
+
+    virtual vector<pair<string, int>> printable() = 0;
 };
 
 #endif //EX3_ALGORITHM_H

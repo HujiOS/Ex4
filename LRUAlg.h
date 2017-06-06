@@ -19,6 +19,14 @@ private:
         delete blk;
     }
 
+    vector<pair<string, int>> printable(){
+        vector<pair<string, int>> vec;
+        for(auto blk : _blocks){
+            vec.push_back(make_pair(blk->getFname(), blk->getId()));
+        }
+        return vec;
+    };
+
 };
 
 #endif //EX3_LRUALG_H

@@ -20,6 +20,16 @@ private:
         _blocks.pop_back();
         delete blk;
     }
+
+    vector<pair<string, int>> printable(){
+        vector<pair<string, int>> vec;
+        std::sort(_blocks.begin(), _blocks.end(), [](Block *a, Block *b){ return a->numReferences()
+                                                                                 > b->numReferences();});
+        for(auto blk : _blocks){
+            vec.push_back(make_pair(blk->getFname(), blk->getId()));
+        }
+        return vec;
+    };
 };
 
 #endif //EX3_LFU_H
