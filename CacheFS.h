@@ -7,6 +7,8 @@
 #ifndef CACHEFS_H
 #define CACHEFS_H
 
+#include <stdlib.h>
+
 // This enum represents a cache algorithm.
 // The possible values are all the cache algorithms that the library supports.
 enum cache_algo_t{
@@ -47,12 +49,10 @@ enum cache_algo_t{
 
  For example:
  CacheFS_init(100, FBR, 0.3333, 0.5)
-Initializes a CacheFS that uses FBR to manage the cache.
-The cache contains 100 blocks, 33 blocks in the old partition,
-50 in the new partition, and the remaining 17 are in the middle partition.
-*/
-
-
+ Initializes a CacheFS that uses FBR to manage the cache.
+ The cache contains 100 blocks, 33 blocks in the old partition,
+ 50 in the new partition, and the remaining 17 are in the middle partition.
+ */
 int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
                  double f_old , double f_new  );
 
@@ -63,9 +63,9 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
 
  Assumptions:
 	1. CacheFS_destroy will be called only after CacheFS_init (one destroy per one init).
-	2.  next CacheFS's function that will be called is CacheFS_init.
-	3. CacheFS_destroy is called only after all the open files already closeAfter CacheFS_destroy is called,
-	   thed.
+	2. After CacheFS_destroy is called,
+	   the next CacheFS's function that will be called is CacheFS_init.
+	3. CacheFS_destroy is called only after all the open files already closed.
 	   In other words, it's the user responsibility to close the files before destroying
 	   the CacheFS.
 

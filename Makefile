@@ -4,8 +4,10 @@ RANLIB=ranlib
 LIBOBJ=CacheFS.o
 
 CFLAGS = -Wall -Wextra -g
-LOADLIBES = -L./ 
+LOADLIBES = -L./
 LFLAGS = -o
+
+MORECLEAN=CacheFS.a
 
 TAR=tar
 TARFLAGS=-cvf
@@ -14,14 +16,17 @@ TARSRCS=$(LIBSRC) Makefile README Algorithm.h Block.cpp Block.h CacheFS.cpp FBRA
 
 all: CacheFS.a
 
+#TEST.o : TEST.cpp
+#	$(CC) $(CFLAGS) $^ -o $@
+
+TEST : TEST.cpp
+	$(CC) $(CFLAGS) $^ CacheFS.a -o $@
+
 %.o: %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 
 filereader: filereader.cpp
 	$(CC) $^ -o $@
- 
-CacheFS.o: CacheFS.cpp CacheFS.h
-	$(CC) -c $^ -o $@
 
 CacheFS.a: $(LIBOBJ)
 	$(AR) $(ARFLAGS) $@ $^
@@ -29,7 +34,7 @@ CacheFS.a: $(LIBOBJ)
 
 
 clean:
-	$(RM) $(TARGETS) $(OBJ) $(LIBOBJ) *~ *core
+	$(RM) $(TARGETS) $(OBJ) $(LIBOBJ) $(MORECLEAN) *~ *core
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRC)

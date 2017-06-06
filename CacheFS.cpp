@@ -165,7 +165,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
         auto data = algo->get_block(f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
         if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-        void *data_ptr = data->getData();
+        char *data_ptr = (char*)data->getData();
         data_ptr += blocks_to_fetch[0].first;
         memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first + 1);  //+1 necessary?
 
@@ -180,7 +180,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     auto data = algo->get_block(f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
     if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-    void *data_ptr = data->getData();
+    char *data_ptr = (char*)data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
     memcpy(buf, data_ptr, blocks_to_fetch[0].second);
 
@@ -195,7 +195,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
         data = algo->get_block(f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
         if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
-        data_ptr = data->getData();
+        data_ptr = (char*)data->getData();
 
         memcpy(buf, data_ptr, block.second);
 
