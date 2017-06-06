@@ -25,7 +25,10 @@ protected:
         return f->numOfBlocks() > id;
     }
 public:
-    Algorithm(int blkNum):_blkNum(blkNum){};
+    Algorithm(int blkNum):_blkNum(blkNum){
+        _hits = 0;
+        _misses = 0;
+    };
 
     int misses(){
         return _misses;

@@ -251,9 +251,8 @@ int CacheFS_print_cache (const char *log_path)
 
 
 int CacheFS_print_stat (const char *log_path){
-    return SUCCESS;
     int hits = algo->hits();
-    int misses = algo->hits();
+    int misses = algo->misses();
 
     string s=string("Hits number: ") + to_string(hits) +
             string(".\nMisses number: ") + to_string(misses) + string(".\n");
