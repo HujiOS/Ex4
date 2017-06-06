@@ -13,7 +13,7 @@
 
 void myFile::removeBlock(int blkId){
     auto elem = _blocks.find(blkId);
-    _blocks.erase(elem);
+    _blocks.erase((*elem).first);
 }
 
 void myFile::addBlock(Block *block) {

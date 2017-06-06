@@ -16,7 +16,7 @@ private:
     void removeBlock(){
         std::sort(_blocks.begin(), _blocks.end(), [](Block *a, Block *b){ return a->numReferences()
                                                                                > b->numReferences();});
-        Block *blk = *_blocks.end();
+        Block *blk = _blocks.back();
         _blocks.pop_back();
         blk->deleteBlock();
         delete blk;

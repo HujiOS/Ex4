@@ -33,13 +33,13 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
     blksize = (size_t)fi.st_blksize;
     switch(cache_algo){
         case LRU:
-            *algo = LRUAlg(blocks_num);
+            algo = new LRUAlg(blocks_num);
             break;
         case FBR:
-            *algo = FBRAlg(blocks_num, f_old, f_new);
+            algo = new FBRAlg(blocks_num, f_old, f_new);
             break;
         case LFU:
-            *algo = LFUAlg(blocks_num);
+            algo = new LFUAlg(blocks_num);
             break;
         default:
             return -1;
@@ -114,7 +114,7 @@ vector<pair<int,int>> blocksToFetch(size_t size, size_t n_bytes, off_t offset)
 
     if(first_block == last_block)                                   //  case first and last blocks are the same
     {
-        res.push_back(pair<int,int>(num_bytes_first, num_bytes_last));
+        res.push_back(pair<int,int>(blksize - num_bytes_first, num_bytes_last));
         return res;
     }
 
@@ -182,7 +182,9 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     char *data_ptr = (char*)data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
-    memcpy(buf, data_ptr, blocks_to_fetch[0].second);
+    if(memcpy(buf, data_ptr, (size_t)blocks_to_fetch[0].second) < 0){
+        return ERR;
+    }
 
     buf += blocks_to_fetch[0].second;
     bytes_read += blocks_to_fetch[0].second;
@@ -197,10 +199,12 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
         data_ptr = (char*)data->getData();
 
-        memcpy(buf, data_ptr, block.second);
+        if(memcpy(buf, data_ptr, (size_t)block.second) < 0){
+            return ERR;
+        }
 
-        buf += block.second;
-        bytes_read += block.second;
+        buf += (size_t)block.second;
+        bytes_read += (size_t)block.second;
     }
 
     return bytes_read;
@@ -213,8 +217,8 @@ int CacheFS_print_cache (const char *log_path)
 
     vector<Block*> b;
 
-    int fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY);
-    if (fd == -1) return ERR;
+    int fd;
+    if((fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY)) < 0) return ERR;
 
     for(Block* blk : b)
     {
@@ -229,6 +233,7 @@ int CacheFS_print_cache (const char *log_path)
 
 
 int CacheFS_print_stat (const char *log_path){
+    return SUCCESS;
     unsigned long hits = 9999;
     unsigned long misses = 1234;
     string s("Hits number: %d.\nMisses number: %d.\n", hits, misses);
