@@ -57,7 +57,7 @@ public:
         }
         if(!hit){
             try{
-                tmpBlock = new Block(*file, id);
+                tmpBlock = new Block(file, id);
             }
             catch(bad_alloc& ba){
                 return nullptr;
@@ -67,8 +67,8 @@ public:
             if(_blocks.size() == _blkNum) this->removeBlock();
             // maintain the last recent used block in the beginning of the vector
         }
-        auto it = _blocks.begin();
-        _blocks.insert(it, tmpBlock);
+        auto itt = this->_blocks.begin();
+        this->_blocks.insert(itt, tmpBlock);
         return *_blocks.begin();
     }
 
