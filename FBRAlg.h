@@ -21,10 +21,12 @@ private:
             refs.push_back((*it)->numReferences());
         }
         auto minRef = min_element(begin(refs), end(refs));
+        reverse(begin(refs),end(refs));
         size_t dist = distance(begin(refs), minRef) + oldIdx;
         auto blockIt = _blocks.begin() + dist;
+        Block*tmpBlock = *blockIt;
         _blocks.erase(blockIt);
-        delete *blockIt;
+        delete tmpBlock;
     }
 
     void evalBlock(Block *blk){

@@ -56,6 +56,7 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
 
 
 int CacheFS_destroy(){
+    open_files.clear();
     algo->destroy();
     return SUCCESS;
 }
@@ -63,12 +64,12 @@ int CacheFS_destroy(){
 
 int CacheFS_open(const char *pathname){
     int local_fd = num_files++;
-    char *path_tmp = realpath(pathname, NULL);
+    char path_tmp[PATH_MAX] ;
+    realpath(pathname, path_tmp);
 
     if(path_tmp == nullptr) return ERR;
 
     string path_str(pathname);
-    free(path_tmp);
 
     auto iter = file_map.find(path_str);
 
@@ -99,7 +100,11 @@ int CacheFS_open(const char *pathname){
 int CacheFS_close(int file_id){
 
     if(open_files.find(file_id) == open_files.end()) return ERR;
-    file_map[open_files[file_id]]->dec_instance_count();
+    if(file_map[open_files[file_id]]->dec_instance_count()){
+        file_map.erase(open_files[file_id]);
+    }
+    open_files.erase(file_id);
+    return SUCCESS;
     //Note: close here? or keep the close in myFile?
 }
 
@@ -176,7 +181,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
         int block = (int)(min(offset, (off_t)f->getSize())/blksize);
 
         auto data = algo->get_block(f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-        if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+        if(data == nullptr) return ERR;   //error is a block with id -1(macro ERR)
 
         char *data_ptr = (char*)data->getData();
         data_ptr += blocks_to_fetch[0].first;
@@ -191,7 +196,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      */
 
     auto data = algo->get_block(f, blocks_to_fetch[0].first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
-    if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
+    if(data == nullptr) return ERR;   //error is a block with id -1(macro ERR)
 
     char *data_ptr = (char*)data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);

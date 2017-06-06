@@ -76,6 +76,7 @@ public:
         for(auto blk : _blocks){
             delete blk;
         }
+        _blocks.clear();
     }
 
     virtual vector<pair<string, int>> printable() = 0;
