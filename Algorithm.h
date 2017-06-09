@@ -17,11 +17,11 @@
 class Algorithm
 {
 protected:
-    int _blkNum;
+    unsigned int _blkNum;
     vector<Block*> _blocks;
     int _hits;
     int _misses;
-    bool verifyBlock(myFile *f, int id){
+    bool verifyBlock(myFile *f, unsigned int id){
         return f->numOfBlocks() > id;
     }
 public:

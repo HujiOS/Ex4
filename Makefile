@@ -7,12 +7,12 @@ CFLAGS = -Wall -Wextra -c -g
 LOADLIBES = -L./
 LFLAGS = -o
 
-MORECLEAN=CacheFS.a
+MORECLEAN=CacheFS.a *.o
 
 TAR=tar
 TARFLAGS=-cvf
 TARNAME=ex4.tar
-TARSRCS=$(LIBSRC) Makefile README Algorithm.h Block.cpp Block.h CacheFS.cpp FBRAlg.h LFUAlg.h LRUAlg.h myFile.cpp myFile.h
+TARSRCS=$(LIBSRC) Makefile README Answers.pdf Algorithm.h Block.cpp Block.h CacheFS.cpp FBRAlg.h LFUAlg.h LRUAlg.h myFile.cpp myFile.h
 
 all: CacheFS.a
 
@@ -20,16 +20,12 @@ TEST.o : TEST.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 
 TEST : TEST.o
-	$(CC) -std=c++11 -Wall *.o -o TEST
-
+	$(CC) TEST.o $(LOADLIBES) CacheFS.a -o TEST
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 
-filereader: filereader.cpp
-	$(CC) $^ -o $@
-
-CacheFS.a: $(LIBOBJ)
+CacheFS.a: $(LIBOBJ) myFile.o Block.o
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 

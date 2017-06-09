@@ -158,9 +158,9 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     //TODO: REMINDER FOR GAL to recheck this funciton because it might contain bugs
     //Notice all the edge cases - same block, the different handling of the first block and the rest of the blocks
     //Maybe more?
-
+    char* c_buf = (char*)buf;
     int bytes_read = 0;
-    if(buf == nullptr || offset < 0) return ERR;
+    if(c_buf == nullptr || offset < 0) return ERR;
 
     auto iter = open_files.find(file_id);
     if(iter == open_files.end()) return ERR;
@@ -185,7 +185,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
         char *data_ptr = (char*)data->getData();
         data_ptr += blocks_to_fetch[0].first;
-        memcpy(buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first);  //TODO: +1 necessary?
+        memcpy(c_buf, data_ptr, blocks_to_fetch[0].second - blocks_to_fetch[0].first);  //TODO: +1 necessary?
 
         return blocks_to_fetch[0].second-blocks_to_fetch[0].first;  //TODO: +1 necessary?
     }
@@ -200,11 +200,11 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     char *data_ptr = (char*)data->getData();
     data_ptr += (blksize-blocks_to_fetch[0].second);
-    if(memcpy(buf, data_ptr, (size_t)blocks_to_fetch[0].second) < 0){
+    if(memcpy(c_buf, data_ptr, (size_t)blocks_to_fetch[0].second) == nullptr){
         return ERR;
     }
 
-    buf += blocks_to_fetch[0].second;
+    c_buf += blocks_to_fetch[0].second;
     bytes_read += blocks_to_fetch[0].second;
 
     blocks_to_fetch.erase(blocks_to_fetch.begin());
@@ -219,11 +219,11 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
         data_ptr = (char*)data->getData();
 
-        if(memcpy(buf, data_ptr, (size_t)block.second) < 0){
+        if(memcpy(buf, data_ptr, (size_t)block.second) == nullptr){
             return ERR;
         }
 
-        buf += (size_t)block.second;
+        c_buf += (size_t)block.second;
         bytes_read += (size_t)block.second;
     }
 
@@ -232,7 +232,6 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
 int CacheFS_print_cache (const char *log_path)
 {
-    int num_of_block;
     string s;
 
     vector<Block*> b;

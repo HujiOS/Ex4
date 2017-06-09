@@ -15,10 +15,10 @@
 #include "myFile.h"
 class Block {
 private:
-    int num_references;
     myFile *_file ;
-    std::string _fname;
     int _block_number;
+    int num_references;
+    std::string _fname;
     void *_blk;
 public:
     Block(myFile*file, int block_number):
@@ -27,7 +27,7 @@ public:
         if(block_number == -1) return;
         _fname = file->getFullPath();
         size_t size = file->getBlockSize();
-        if((_blk = aligned_alloc(size, size)) < 0){
+        if((_blk = aligned_alloc(size, size)) == nullptr){
             std::cout << "Error while alloc" << std::endl;
             throw bad_alloc();
         }
