@@ -212,6 +212,8 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
     for (auto &block:blocks_to_fetch)
     {
+        if(block.second == 0) continue;
+
         data = algo->get_block(f, block.first); //TODO: Prone to problems. remember block returned is a copy and has a pointer
         if(data->getId() == ERR) return ERR;   //error is a block with id -1(macro ERR)
 
