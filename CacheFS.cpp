@@ -171,8 +171,6 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
     myFile *f = file_map[(*iter).second];
     auto blocks_to_fetch = blocksToFetch(f->getSize(), count, offset);//returns a vector of pairs
     // of ints, see doc'
-
-
     /**
      *
      * case everything is in the same block(not necessarily from the beginning.
