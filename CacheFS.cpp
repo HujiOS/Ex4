@@ -41,15 +41,18 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
             algo = new LRUAlg(blocks_num);
             break;
         case FBR:
+            if(f_old < 0 || f_new <0 || f_new > 1 || f_old >1) return ERR;
+            if((f_old+f_new > 1)) return ERR;
+
             algo = new FBRAlg(blocks_num, f_old, f_new);
             break;
         case LFU:
             algo = new LFUAlg(blocks_num);
             break;
         default:
-            return -1;
+            return ERR;
     }
-    return 1;
+    return SUCCESS;
 
 }
 
@@ -178,6 +181,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
      */
     if (blocks_to_fetch.size() == 1)
     {
+        if(blocks_to_fetch[0].first == blocks_to_fetch[0].second) return 0;
         int block = (int)(min(offset, (off_t)f->getSize())/blksize);
 
         auto data = algo->get_block(f,block); //TODO: Prone to problems. remember block returned is a copy and has a pointer
@@ -219,7 +223,7 @@ int CacheFS_pread(int file_id, void *buf, size_t count, off_t offset)
 
         data_ptr = (char*)data->getData();
 
-        if(memcpy(buf, data_ptr, (size_t)block.second) == nullptr){
+        if(memcpy(c_buf, data_ptr, (size_t)block.second) == nullptr){
             return ERR;
         }
 
@@ -256,7 +260,7 @@ int CacheFS_print_stat (const char *log_path){
     int misses = algo->misses();
 
     string s=string("Hits number: ") + to_string(hits) +
-            string(".\nMisses number: ") + to_string(misses) + string(".\n");
+            string("\nMisses number: ") + to_string(misses) + string("\n");//TODO:ADD DOTs
 
     int fd;
     if((fd = open(log_path, O_APPEND|O_CREAT|O_WRONLY)) < 0) return ERR;

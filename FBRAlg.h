@@ -24,7 +24,7 @@ private:
 
         int minRef = *min_element(begin(refs), end(refs));
 
-        for(auto itt = _blocks.end() - 1; itt != _blocks.begin() + startOfOld; --itt){
+        for(auto itt = _blocks.end() - 1; itt != _blocks.begin() + startOfOld - 1; --itt){
             if( (*itt)->numReferences() == minRef ){
                 Block*tmpBlock = *itt;
                 _blocks.erase(itt);
