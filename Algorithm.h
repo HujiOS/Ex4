@@ -25,10 +25,16 @@ protected:
         return f->numOfBlocks() > id;
     }
 public:
-    Algorithm(int blkNum):_blkNum(blkNum){
+    Algorithm(int blkNum):_blkNum((unsigned int)blkNum){
         _hits = 0;
         _misses = 0;
     };
+    virtual ~Algorithm(){
+        for(auto blk:_blocks){
+            delete blk;
+        }
+        _blocks.clear();
+    }
 
     int misses(){
         return _misses;

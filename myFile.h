@@ -41,6 +41,10 @@ public:
 
     }
 
+    ~myFile(){
+        _blocks.clear();
+    }
+
     /**
      *
      * @return overall size of the current file

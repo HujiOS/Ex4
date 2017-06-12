@@ -40,6 +40,7 @@ public:
     }
     ~Block(){
         this->deleteBlock();
+        _file = nullptr;
         free(_blk);
         return;
     }

@@ -1,0 +1,19 @@
+bgalb, omer
+Gal Katzhendler(203165238), Omer Shacham(204034722)
+EX: 4
+
+FILES:
+README - this file
+Makefile - a file that helps to compile all of this
+Algorithm.h - the base class of our implementation algorithms
+FBRAlg.h - Implementation to the FBR algorithm
+LFUAlg.h - Implementation to the LRU algorithm
+LRUAlg.h - Implementation to the LFU algorithm
+Block.h - A class that wrap specific block
+myFile.h - A class that wrap specific file
+CacheFS.cpp - Our main library
+
+REMARKS:
+
+
+ANSWERS:

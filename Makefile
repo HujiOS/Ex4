@@ -38,6 +38,10 @@ depend:
 tar:
 	$(TAR) $(TARFLAGS) $(TARNAME) $(TARSRCS)
 
+test1:
+	g++ -c -Wall -std=c++11 -DNDEBUG Test1.cpp -o Test1.o
+	g++ Test1.o -L. CacheFS.a -o Test1
+
 jona:
 	mv -f Search jonas/Test_496/Search; \
 	mv -f libMapReduceFramework.a jonas/Framework/MapReduceFramework.a; \

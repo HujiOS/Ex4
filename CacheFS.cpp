@@ -30,6 +30,7 @@ static size_t blksize;
 static map<string, myFile*> file_map;     //Map for full-path.
 static map<int, string> open_files;     //open files map
 static Algorithm *algo = nullptr;                 //Algorithm of choice
+static vector<myFile*> closedFiles;
 
 int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
                  double f_old , double f_new  ){
@@ -61,6 +62,11 @@ int CacheFS_init(int blocks_num, cache_algo_t cache_algo,
 int CacheFS_destroy(){
     open_files.clear();
     algo->destroy();
+    for(auto file: closedFiles){
+        delete file;
+    }
+    closedFiles.clear();
+    delete algo;
     return SUCCESS;
 }
 
@@ -104,7 +110,9 @@ int CacheFS_close(int file_id){
 
     if(open_files.find(file_id) == open_files.end()) return ERR;
     if(file_map[open_files[file_id]]->dec_instance_count()){
+        myFile *tmpFile = file_map[open_files[file_id]];
         file_map.erase(open_files[file_id]);
+        closedFiles.push_back(tmpFile);
     }
     open_files.erase(file_id);
     return SUCCESS;
